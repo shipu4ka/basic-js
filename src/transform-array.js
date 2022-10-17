@@ -15,27 +15,29 @@ const { NotImplementedError } = require('../extensions/index.js');
  */
 function transform(arr) {
   console.log(arr);
-  if(!Array.isArray(arr)) {
+  if (!Array.isArray(arr)) {
     throw new Error("'arr' parameter must be an instance of the Array!");
   }
-  if(!arr.length) {
+  if (!arr.length) {
     return arr;
   }
   const newArr = [...arr];
   const resultArr = [];
   newArr.forEach((item, i) => {
-    if(typeof(item) === 'number') {
-      resultArr.push(item);
-    } else if(item === '--discard-next' && i !== newArr.length - 1) {
-      newArr.splice(item, 2);
-    } else if (item === '--discard-prev' && i !== 0) {
+    if (item === '--discard-next' && i !== newArr.length - 1) {
+      newArr.splice(i, 2);
+    } else if (item === '--discard-prev' && i > 0 && newArr[i - 1] !== '--discard-next') {
       resultArr.pop();
-    } else if (item === '--double-next' && i !== newArr.length - 1) {
+    }
+    else if (item === '--double-next' && i !== newArr.length - 1) {
       resultArr.push(newArr[i + 1]);
     } else if (item === '--double-prev' && i !== 0) {
       resultArr.push(newArr[i - 1]);
-    };
+    } else if(!String(item).startsWith('--')){
+      resultArr.push(item);
+    }
   });
+  return resultArr;
 }
 
 
